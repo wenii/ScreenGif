@@ -6,7 +6,6 @@
 #include "ScreenGif.h"
 #include "ScreenGifDlg.h"
 #include "afxdialogex.h"
-#include "Mouse.h"
 #include "Gif.h"
 #include "WellcomPage.h"
 
@@ -24,6 +23,7 @@ CScreenGifDlg::CScreenGifDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CScreenGifDlg::IDD, pParent)
 {
 	m_bStart = FALSE;
+	m_index = 0;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pRegionDlg = NULL;
 	//获得显示器屏幕尺寸
@@ -237,7 +237,6 @@ BOOL CScreenGifDlg::OnToolTipText(UINT NID, NMHDR* pNMHDR, LRESULT* pResult)
 	CString strTipText;
 	UINT nID = pNMHDR->idFrom;
 	UINT tempid;
-	UINT tem;
 	UINT fid;
 	if (pNMHDR->code == TTN_NEEDTEXTA && (pTTTA->uFlags&TTF_IDISHWND) || pNMHDR->code == TTN_NEEDTEXTW && (pTTTW->uFlags&TTF_IDISHWND))
 	{
@@ -255,7 +254,7 @@ BOOL CScreenGifDlg::OnToolTipText(UINT NID, NMHDR* pNMHDR, LRESULT* pResult)
 		fid = m_toolbar.GetItemID(tempid);
 		strTipText.LoadString(fid);
 		
-		strTipText = strTipText.Mid(strTipText.Find('/ n', 0) + 1);
+		strTipText = strTipText.Mid(strTipText.Find(_T("/n"), 0) + 1);
 #ifndef   _UNICODE
 		if (pNMHDR->code == TTN_NEEDTEXTA)
 		{
@@ -613,7 +612,7 @@ bool CScreenGifDlg::GetPic()
 	// 将原始设备颜色表及像素数据块复制到兼容DC中
 	m_dcCompatible.BitBlt(0, 0, m_Data.m_rc.right - m_Data.m_rc.left - 4, m_Data.m_rc.bottom - m_Data.m_rc.top - 4, &m_srcDc, m_Data.m_rc.left + 2, m_Data.m_rc.top + 2, SRCCOPY);
 	CClientDC dc(this);
-	RECT displayRect;
+	//RECT displayRect;
 	// 将位图保存在剪切板中
 	if (OpenClipboard())
 	{

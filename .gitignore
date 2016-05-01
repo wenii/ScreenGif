@@ -8,6 +8,8 @@
 *.pdb
 *.tlog
 *.lastbuildstate
+*.ipch
+*.res
 
 # Precompiled Headers
 *.gch

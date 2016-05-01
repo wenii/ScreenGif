@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "GlobalData.h"
-#include "Mouse.h"
-
 #include <gdiplus.h>  
 #include <stdio.h>  
 using namespace Gdiplus;

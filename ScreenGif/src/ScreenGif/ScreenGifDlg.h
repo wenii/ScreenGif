@@ -85,7 +85,7 @@ public:
 	CDC m_srcDc;					//屏幕DC
 	CDC m_dcCompatible;				//兼容DC
 	CBitmap m_mapCompatible;		//兼容位图
-	int m_index = 0;				//bmp图编号
+	int m_index;				//bmp图编号
 	bool m_bIsReadyScreen;			//是否可以截图（是否选择了截图区域）
 	bool m_bIsReadyGif;				//是否可以录制Gif
 	bool m_bFirstGif;				//第一张Gif

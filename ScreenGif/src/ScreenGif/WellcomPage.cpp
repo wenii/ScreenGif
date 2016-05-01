@@ -39,15 +39,13 @@ END_MESSAGE_MAP()
 void CWellcomPage::OnPaint()
 {
 	CPaintDC dc(this); // device context for paintin
-	//CDialog::OnPaint();//要禁止这个调用   
 	
 	CRect   rect;
 	GetClientRect(&rect);
 	CDC   dcMem;
 	dcMem.CreateCompatibleDC(&dc);
 	CBitmap   bmpBackground;
-	bmpBackground.LoadBitmap(IDB_BITMAP4);   //IDB_BITMAP是你自己的图对应的ID   ，由于我刚刚加入的位图资源 
-	//被我命名成了IDB_Bg，因而我这句就是bmpBackground.LoadBitmap(IDB_Bg);  
+	bmpBackground.LoadBitmap(IDB_BITMAP4); 
 
 	BITMAP   bitmap;
 	bmpBackground.GetBitmap(&bitmap);
@@ -69,7 +67,7 @@ BOOL CWellcomPage::OnInitDialog()
 	int x = GetSystemMetrics(SM_CXSCREEN);
 	int y = GetSystemMetrics(SM_CYSCREEN);
 	MoveWindow(CRect(x / 2 - 300, y / 2 - 100, x / 2 + 300, y / 2 + 100));
-	return TRUE;  // return TRUE unless you set the focus to a control
+	return TRUE;  
 	// 异常:  OCX 属性页应返回 FALSE
 }
 

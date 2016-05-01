@@ -43,16 +43,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../../../Obj/</OutDir>
-    <IntDir>../../../Obj/</IntDir>
+    <OutDir>../../../Debug/</OutDir>
+    <IntDir>../../../Debug/</IntDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);../../lib;</LibraryPath>
     <LibraryWPath>$(WindowsSDK_MetadataPath);../../bin;</LibraryWPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../../../Obj/</OutDir>
-    <IntDir>../../../Obj/</IntDir>
+    <OutDir>../../../Release/</OutDir>
+    <IntDir>../../../Release/</IntDir>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../../include;</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);../../lib;</LibraryPath>
     <LibraryWPath>$(WindowsSDK_MetadataPath);../../bin;</LibraryWPath>
@@ -68,7 +68,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>../../bin/ScreenGif.exe</OutputFile>
+      <OutputFile>../../../Debug/ScreenGif.exe</OutputFile>
       <AdditionalDependencies>
       </AdditionalDependencies>
       <AdditionalLibraryDirectories>
@@ -100,7 +100,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>../../bin/ScreenGifRelease.exe</OutputFile>
+      <OutputFile>../../../Release/ScreenGif.exe</OutputFile>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

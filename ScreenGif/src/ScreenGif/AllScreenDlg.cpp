@@ -5,7 +5,6 @@
 #include "ScreenGif.h"
 #include "AllScreenDlg.h"
 #include "afxdialogex.h"
-#include "Mouse.h"
 
 
 
@@ -60,7 +59,7 @@ BOOL CAllScreenDlg::OnInitDialog()
 void CAllScreenDlg::PostNcDestroy()
 {
 	// TODO:  在此添加专用代码和/或调用基类
-	//delete this;
+	delete this;
 	CDialogEx::PostNcDestroy();
 }
 

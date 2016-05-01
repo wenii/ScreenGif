@@ -10,6 +10,8 @@
 *.lastbuildstate
 *.ipch
 *.res
+*.ilk
+*.idb
 
 # Precompiled Headers
 *.gch

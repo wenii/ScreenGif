@@ -69,6 +69,5 @@ HBRUSH CRegionDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  在此更改 DC 的任何特性
 	return m_brush;
-	
 	return hbr;
 }

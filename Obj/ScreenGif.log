@@ -1,26 +1,9 @@
-﻿生成启动时间为 2016/4/30 21:12:04。
-     1>项目“E:\ScreenGif\ScreenGif\ScreenGif\ScreenGif\ScreenGif.vcxproj”在节点 2 上(Rebuild 个目标)。
+﻿生成启动时间为 2016/5/1 14:11:38。
+     1>项目“E:\ScreenGif\ScreenGif\ScreenGif\ScreenGif\ScreenGif.vcxproj”在节点 2 上(Build 个目标)。
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(381,5): warning MSB8028: The intermediate directory (../../../Obj/) contains files shared from another project (MouseMessage.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
-         D:\Program Files (x86)\Visual Studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"../../../Obj/ScreenGif.pch" /Fo"../../../Obj/" /Fd"../../../Obj/vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         D:\Program Files (x86)\Visual Studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"../../../Obj/ScreenGif.pch" /Fo"../../../Obj/" /Fd"../../../Obj/vc120.pdb" /Gd /TP /analyze- /errorReport:prompt AllScreenDlg.cpp Gif.cpp GlobalData.cpp RegionDlg.cpp ScreenGif.cpp ScreenGifDlg.cpp WellcomPage.cpp
-         AllScreenDlg.cpp
-     1>E:\ScreenGif\ScreenGif\include\Mouse.h(1): warning C4068: 未知的杂注
-         Gif.cpp
-         GlobalData.cpp
-     1>E:\ScreenGif\ScreenGif\include\Mouse.h(1): warning C4068: 未知的杂注
+         D:\Program Files (x86)\Visual Studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"../../../Obj/ScreenGif.pch" /Fo"../../../Obj/" /Fd"../../../Obj/vc120.pdb" /Gd /TP /analyze- /errorReport:prompt RegionDlg.cpp
          RegionDlg.cpp
-         ScreenGif.cpp
-         ScreenGifDlg.cpp
-     1>E:\ScreenGif\ScreenGif\include\Mouse.h(1): warning C4068: 未知的杂注
-     1>ScreenGifDlg.cpp(258): warning C4305: “参数”: 从“int”到“wchar_t”截断
-     1>ScreenGifDlg.cpp(258): warning C4309: “参数”: 截断常量值
-     1>ScreenGifDlg.cpp(240): warning C4101: “tem”: 未引用的局部变量
-     1>ScreenGifDlg.cpp(616): warning C4101: “displayRect”: 未引用的局部变量
-         WellcomPage.cpp
-       ResourceCompile:
-         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D NDEBUG /D _UNICODE /D UNICODE /l"0x0804" /I../../../Obj/ /nologo /fo"../../../Obj/ScreenGif.res" ScreenGif.rc 
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(1186,5): warning MSB8012: TargetPath(E:\ScreenGif\ScreenGif\ScreenGif\ScreenGif\../../../Obj/ScreenGif.exe) does not match the Linker's OutputFile property value (E:\ScreenGif\ScreenGif\bin\ScreenGifRelease.exe). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(1188,5): warning MSB8012: TargetName(ScreenGif) does not match the Linker's OutputFile property value (ScreenGifRelease). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
        Link:
@@ -36,8 +19,8 @@
          正在生成代码
          已完成代码的生成
          ScreenGif.vcxproj -> E:\ScreenGif\ScreenGif\ScreenGif\ScreenGif\../../../Obj/ScreenGif.exe
-     1>已完成生成项目“E:\ScreenGif\ScreenGif\ScreenGif\ScreenGif\ScreenGif.vcxproj”(Rebuild 个目标)的操作。
+     1>已完成生成项目“E:\ScreenGif\ScreenGif\ScreenGif\ScreenGif\ScreenGif.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:41.60
+已用时间 00:00:14.19

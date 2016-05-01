@@ -12,6 +12,7 @@
 *.res
 *.ilk
 *.idb
+*.gif
 
 # Precompiled Headers
 *.gch

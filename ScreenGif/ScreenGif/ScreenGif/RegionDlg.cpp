@@ -69,6 +69,6 @@ HBRUSH CRegionDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  在此更改 DC 的任何特性
 	return m_brush;
-	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
+	
 	return hbr;
 }

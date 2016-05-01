@@ -4,7 +4,6 @@
 
 #pragma once
 #include "GlobalData.h"
-// CScreenGifDlg 对话框
 #include "RegionDlg.h"
 #include "AllScreenDlg.h"
 #include "afxcmn.h"
@@ -18,10 +17,8 @@ public:
 
 // 对话框数据
 	enum { IDD = IDD_SCREENGIF_DIALOG };
-
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-
 
 // 实现
 protected:
@@ -33,36 +30,41 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	// 得到选取区域
 	afx_msg void OnBnClickedGetarea();
-	afx_msg void OnBnClickedFullscreen();
+	// 录制Gif图片按钮
 	afx_msg void OnBnClickedStart();
+	// 分享按钮
 	afx_msg void OnBnClickedShare();
+	// 完成按钮
 	afx_msg void OnBnClickedGetPic();
+	// 保存按钮
 	afx_msg void OnBnClickedSave();
+	// 按钮tootip
 	afx_msg BOOL OnToolTipText(UINT NID, NMHDR* pNMHDR, LRESULT* pResult);
+	// 全局快捷键
 	afx_msg long OnHotKey(WPARAM wParam, LPARAM lParam);
+	// 帮助
 	afx_msg void OnHelp();
-
-
-public:
-	POINT m_Begin;	//选中区域的左上角坐标
-	POINT m_End;	//选中区域的右下角坐标
-	HHOOK m_myHook;	//鼠标钩子句柄
-	HHOOK m_hkey;	// 键盘钩子句柄
+	// 关于
+	afx_msg void OnAbout();
 
 public:
 	// 截屏起点
 	afx_msg LRESULT OnBeginPoint(WPARAM wParam, LPARAM lParam);
 	// 鼠标移动时的坐标
-	//afx_msg LRESULT OmMouseMove(WPARAM wParam, LPARAM lParam);
-	// 截屏终点
 	afx_msg LRESULT OnEndPoint(WPARAM wParam, LPARAM lParam);
 	// 截图快捷键消息
 	afx_msg LRESULT OnScreenPic(WPARAM wParam, LPARAM lParam);
-	// 线程通知消息
-	afx_msg LRESULT OnProgress(WPARAM wParam, LPARAM lParam);
-	// 线程通知结束
-	afx_msg LRESULT OnThreadEnd(WPARAM wParam, LPARAM lParam);
+	// 定时器
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	// 改变对话框背景颜色
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	// 托盘图标通知消息
+	afx_msg LRESULT OnNotifyMsg(WPARAM wparam, LPARAM lparam);
+	// 取消按钮
+	afx_msg void OnBnClickedCancel();
+
 
 public:
 	// 截图
@@ -73,45 +75,30 @@ public:
 	void MakeGif();
 	// 添加工具栏
 	void AddToolbar();
-	static DWORD WINAPI ThreadMakeGif(LPVOID lpParam);
 
 
 
 public:
-	CGlobalData m_Data;				//数据类
+	RECT m_rc;						//屏幕截图坐标
+	RECT m_AllScreen;				//全屏尺寸
 	CRegionDlg* m_pRegionDlg;		//选取框类
 	CAllScreenDlg* m_pAllScreenDlg; //屏幕对话框
-	BOOL m_bStart;					//鼠标框选时的标志
 	CDC m_srcDc;					//屏幕DC
 	CDC m_dcCompatible;				//兼容DC
 	CBitmap m_mapCompatible;		//兼容位图
-	int m_index;				//bmp图编号
-	bool m_bIsReadyScreen;			//是否可以截图（是否选择了截图区域）
+	int m_index;					//bmp图编号
 	bool m_bIsReadyGif;				//是否可以录制Gif
 	bool m_bFirstGif;				//第一张Gif
 	CFile* m_pGifFile;				//Gif文件
 	WORD m_wGifbeginSize;			//Gif文件开始到图形控制扩展块的大小
 	WORD m_wGifDataSize;			//Gif文件图像数据部分的大小
-	bool m_bMouseHook;				//鼠标钩子是否已经设定
 	CString m_strPath;				//pic文件路径
 	CString m_strCurentGif;			//当前制作的gif
-	bool m_bIsPicexistInDc;			//内存中是否已经有了图片
 	CBrush m_brush;					//对话框背景颜色
 	CToolBar m_toolbar;				//工具栏
 	CImageList m_toolbarlist;		//图标链表
-	CToolBar m_toolbarchange;		//工具栏切换
-	CImageList m_toolbarlistchange;	//切换图标链表
-	NOTIFYICONDATA m_notify;
+	NOTIFYICONDATA m_notify;		//托盘数据结构体
 	CWellcomPage* m_wellcom;		//启动界面
-
 	CToolTipCtrl m_tooltip;			//工具栏tooltip
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	//afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg LRESULT OnNotifyMsg(WPARAM wparam, LPARAM lparam);
-	virtual void OnCancel();
-	afx_msg void OnBnClickedCancel();
-	// 进度条
-	CProgressCtrl m_Progress;
+	CProgressCtrl m_Progress;		// 进度条
 };

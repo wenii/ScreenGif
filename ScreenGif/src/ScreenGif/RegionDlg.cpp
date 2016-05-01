@@ -46,8 +46,7 @@ BOOL CRegionDlg::OnInitDialog()
 	tmprgn.CreateRectRgn(2, 2, m_rect.right - m_rect.left - 2, m_rect.bottom - m_rect.top - 2);
 	rgn.CombineRgn(&rgn, &tmprgn, RGN_XOR);
 	SetWindowRgn(rgn, TRUE);
-	SetWindowPos(&wndTopMost, m_rect.left, m_rect.top,
-		m_rect.right - m_rect.left, m_rect.bottom - m_rect.top, SWP_SHOWWINDOW);
+	SetWindowPos(&wndTopMost, m_rect.left, m_rect.top,m_rect.right - m_rect.left, m_rect.bottom - m_rect.top, SWP_SHOWWINDOW);
 	
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -69,5 +68,4 @@ HBRUSH CRegionDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  在此更改 DC 的任何特性
 	return m_brush;
-	return hbr;
 }

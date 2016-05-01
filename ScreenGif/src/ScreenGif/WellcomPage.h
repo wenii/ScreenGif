@@ -1,4 +1,5 @@
 #pragma once
+#include "afxcmn.h"
 
 
 // CWellcomPage ¶Ô»°¿ò

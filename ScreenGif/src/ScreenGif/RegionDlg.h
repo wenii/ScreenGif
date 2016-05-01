@@ -20,9 +20,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
+	virtual void PostNcDestroy();
 public:
 	RECT m_rect;	//对话框的大小
-	virtual void PostNcDestroy();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 private:
 	CBrush m_brush;

@@ -67,6 +67,8 @@ BOOL CWellcomPage::OnInitDialog()
 	int x = GetSystemMetrics(SM_CXSCREEN);
 	int y = GetSystemMetrics(SM_CYSCREEN);
 	MoveWindow(CRect(x / 2 - 300, y / 2 - 100, x / 2 + 300, y / 2 + 100));
+
+
 	return TRUE;  
 	// 异常:  OCX 属性页应返回 FALSE
 }
@@ -83,3 +85,4 @@ void CWellcomPage::OnTimer(UINT_PTR nIDEvent)
 	}
 	CDialog::OnTimer(nIDEvent);
 }
+

@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 #include "Gif.h"
 #include "WellcomPage.h"
+#include "SgifAbout.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -22,25 +23,21 @@
 CScreenGifDlg::CScreenGifDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CScreenGifDlg::IDD, pParent)
 {
-	m_bStart = FALSE;
 	m_index = 0;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pRegionDlg = NULL;
 	//获得显示器屏幕尺寸
-	m_Data.m_AllScreen.left = 0;
-	m_Data.m_AllScreen.top = 0;
-	m_Data.m_AllScreen.right = GetSystemMetrics(SM_CXSCREEN);
-	m_Data.m_AllScreen.bottom = GetSystemMetrics(SM_CYSCREEN);
+	m_AllScreen.left = 0;
+	m_AllScreen.top = 0;
+	m_AllScreen.right = GetSystemMetrics(SM_CXSCREEN);
+	m_AllScreen.bottom = GetSystemMetrics(SM_CYSCREEN);
 	// 创建屏幕DC
 	m_srcDc.CreateDC(_T("DISPLAY"), NULL, NULL, NULL);
-	m_bIsReadyScreen = false;
 	m_bIsReadyGif = false;
 	m_bFirstGif = false;
 	m_pGifFile = NULL;
 	m_wGifbeginSize = 0;
-	m_bMouseHook = false;
 	m_strCurentGif = _T("");
-	m_bIsPicexistInDc = false;
 	m_brush.CreateSolidBrush(RGB(37, 37, 38));
 	//在程序目录下创建pic目录
 	m_strPath = CGlobalData::GetCurrentFilePath();
@@ -56,7 +53,6 @@ CScreenGifDlg::CScreenGifDlg(CWnd* pParent /*=NULL*/)
 
 CScreenGifDlg::~CScreenGifDlg()
 {
-	UnhookWindowsHookEx(m_hkey);
 	NOTIFYICONDATA nd;
 	nd.cbSize = sizeof (NOTIFYICONDATA);
 	nd.hWnd = m_hWnd;
@@ -79,20 +75,18 @@ BEGIN_MESSAGE_MAP(CScreenGifDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(ID_GETAREA, &CScreenGifDlg::OnBnClickedGetarea)
-	ON_BN_CLICKED(ID_FULLSCREEN, &CScreenGifDlg::OnBnClickedFullscreen)
 	ON_BN_CLICKED(ID_START, &CScreenGifDlg::OnBnClickedStart)
 	ON_BN_CLICKED(ID_SHARE, &CScreenGifDlg::OnBnClickedShare)
 	ON_BN_CLICKED(ID_GETPIC, &CScreenGifDlg::OnBnClickedGetPic)
 	ON_BN_CLICKED(ID_SAVE, &CScreenGifDlg::OnBnClickedSave)
 	ON_MESSAGE(UM_BEGINPOINT, OnBeginPoint)
 	ON_MESSAGE(UM_ENDPOINT, OnEndPoint)
-	ON_MESSAGE(UM_PROGRESS, OnProgress)
-	ON_MESSAGE(UM_THREADEND, OnThreadEnd)
 	ON_MESSAGE(UK_REGION, OnScreenPic)
 	ON_NOTIFY_EX(TTN_NEEDTEXT, 0, OnToolTipText)
 	ON_MESSAGE(WM_USER_NOTIFYICON, OnNotifyMsg)
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
 	ON_COMMAND(WM_USEHELP,	OnHelp)
+	ON_COMMAND(WM_ABOUT, OnAbout)
 	ON_WM_TIMER()
 	ON_WM_CTLCOLOR()
 	ON_WM_MOUSEMOVE()
@@ -110,38 +104,25 @@ HRESULT CScreenGifDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
 	return TRUE;
 }
 
-//进度条
-LRESULT CScreenGifDlg::OnProgress(WPARAM wParam, LPARAM lParam)
-{
-	
-	m_Progress.StepIt();
-	UpdateData(FALSE);
-	m_Progress.UpdateWindow();
-	m_Progress.RedrawWindow();
-	m_Progress.ShowWindow(SW_SHOW);
-	return 0;
-
-}
 
 // 获取终点坐标
 LRESULT CScreenGifDlg::OnEndPoint(WPARAM wParam, LPARAM lParam)
 {
-	m_bStart = FALSE;
 	POINT* pt = (POINT*)lParam;
-	m_Data.m_rc.right = pt->x;
-	m_Data.m_rc.bottom = pt->y;
+	m_rc.right = pt->x;
+	m_rc.bottom = pt->y;
 	bool isAllScreen = false;
-	if (pt->x - m_Data.m_rc.left == 0 || pt->y - m_Data.m_rc.top == 0)//如果区域无效取全屏
+	if (pt->x -  m_rc.left == 0 || pt->y - m_rc.top == 0)//如果区域无效取全屏
 	{
 		//获取桌面全屏尺寸
-		m_Data.m_rc = m_Data.m_AllScreen;
+		m_rc = m_AllScreen;
 		isAllScreen = true;
 	}
 	//创建，显示框选对话框
 	if (m_pRegionDlg == NULL)
 	{
 		m_pRegionDlg = new CRegionDlg;
-		m_pRegionDlg->m_rect = m_Data.m_rc;
+		m_pRegionDlg->m_rect = m_rc;
 		m_pRegionDlg->Create(IDD_DIALOG_REGION, NULL);
 		
 		m_pRegionDlg->ShowWindow(SW_SHOW);
@@ -150,14 +131,14 @@ LRESULT CScreenGifDlg::OnEndPoint(WPARAM wParam, LPARAM lParam)
 	RECT rect;
 	GetWindowRect(&rect);
 	RECT rt;
-	rt.left = m_Data.m_rc.right - (rect.right - rect.left);
-	rt.top = m_Data.m_rc.bottom;
-	rt.right = m_Data.m_rc.right;
-	rt.bottom = m_Data.m_rc.bottom + (rect.bottom - rect.top);
+	rt.left = m_rc.right - (rect.right - rect.left);
+	rt.top = m_rc.bottom;
+	rt.right = m_rc.right;
+	rt.bottom = m_rc.bottom + (rect.bottom - rect.top);
 	if (isAllScreen)
 	{
 		rt.top = 0;
-		rt.right = m_Data.m_rc.right;
+		rt.right = m_rc.right;
 		rt.bottom = rect.bottom - rect.top;
 	}
 	SetWindowPos(&wndTopMost, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, SWP_SHOWWINDOW);
@@ -175,10 +156,9 @@ LRESULT CScreenGifDlg::OnEndPoint(WPARAM wParam, LPARAM lParam)
 // 获取起始点坐标
 LRESULT CScreenGifDlg::OnBeginPoint(WPARAM wParam, LPARAM lParam)
 {
-	m_bStart = TRUE;
 	POINT* pt = (POINT*)lParam;
-	m_Data.m_rc.left = pt->x;
-	m_Data.m_rc.top = pt->y;
+	m_rc.left = pt->x;
+	m_rc.top = pt->y;
 
 	return TRUE;
 }
@@ -414,35 +394,12 @@ void CScreenGifDlg::OnBnClickedGetarea()
 	}
 
 		m_pAllScreenDlg = new CAllScreenDlg;		//创建新的全屏幕背景对话框
-		m_pAllScreenDlg->m_rc = m_Data.m_AllScreen;
+		m_pAllScreenDlg->m_rc = m_AllScreen;
 		m_pAllScreenDlg->Create(IDD_DIALOG_ALLSCREEN, NULL);
 		m_pAllScreenDlg->ShowWindow(SW_SHOW);
-		m_bMouseHook = true;
 	
 }
 
-// TODO:  全屏 获取全屏尺寸
-void CScreenGifDlg::OnBnClickedFullscreen()
-{
-	
-	//创建，显示框选对话框
-	if (m_pRegionDlg != NULL)
-	{
-		m_pRegionDlg->DestroyWindow();
-		m_pRegionDlg = NULL;
-	}
-	m_bIsReadyScreen = true;
-	m_Data.m_rc = m_Data.m_AllScreen;
-	if (m_pRegionDlg == NULL)
-	{
-		m_pRegionDlg = new CRegionDlg;
-		m_pRegionDlg->m_rect = m_Data.m_rc;
-		m_pRegionDlg->Create(IDD_DIALOG_REGION, NULL);
-		m_pRegionDlg->ShowWindow(SW_SHOW);
-	}
-}
-
-// TODO:  开始录制视频
 // TODO:  制作Gif图
 void CScreenGifDlg::OnBnClickedStart()
 {
@@ -462,7 +419,6 @@ void CScreenGifDlg::OnBnClickedStart()
 		SetDlgItemText(ID_START, _T("录制GIF"));
 		m_pRegionDlg->DestroyWindow();	//销毁选框
 		m_pRegionDlg = NULL;
-		m_bIsReadyScreen = false;
 		m_bIsReadyGif = false;
 		//关闭定时器
 		KillTimer(1);
@@ -539,7 +495,7 @@ void CScreenGifDlg::OnBnClickedShare()
 	// TODO:  分享功能
 	CString strPath = _T("http://service.weibo.com/share/share.php?appkey=583395093&title=");
 	CString strWords = _T("微博分享测试！");
-	CString strContext = strPath + strWords + _T("<img src = \"") + m_strCurentGif + _T("\" />");
+	CString strContext = strPath + strWords;
 
 	ShellExecute(NULL, _T("open"), (LPCTSTR)strContext, _T(""), _T(""), SW_SHOW);
 }
@@ -551,11 +507,10 @@ void CScreenGifDlg::OnBnClickedGetPic()
 	// 截图功能
 
 	GetPic();
-	m_bIsPicexistInDc = true;
+	//m_bIsPicexistInDc = true;
 	m_mapCompatible.DeleteObject();
 	m_pRegionDlg->DestroyWindow();
 	m_pRegionDlg = NULL;
-	m_bIsReadyScreen = false;
 
 	ShowWindow(SW_HIDE);
 }
@@ -565,7 +520,7 @@ void CScreenGifDlg::OnBnClickedSave()
 {
 	ShowWindow(SW_HIDE);
 	GetPic();
-	m_bIsPicexistInDc = false;
+	//m_bIsPicexistInDc = false;
 	if (m_pRegionDlg != NULL)
 	{
 		m_pRegionDlg->DestroyWindow();
@@ -591,7 +546,6 @@ void CScreenGifDlg::OnBnClickedSave()
 	}
 	m_mapCompatible.DeleteObject();
 		
-	m_bIsReadyScreen = false;
 }
 
 bool CScreenGifDlg::GetPic()
@@ -604,13 +558,13 @@ bool CScreenGifDlg::GetPic()
 	// 创建位图兼容DC
 	if (m_mapCompatible.m_hObject == NULL)
 	{
-		m_mapCompatible.CreateCompatibleBitmap(&m_srcDc, m_Data.m_rc.right - m_Data.m_rc.left - 4, m_Data.m_rc.bottom - m_Data.m_rc.top - 4);
+		m_mapCompatible.CreateCompatibleBitmap(&m_srcDc, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4);
 
 	}
 	// 将兼容位图选入兼容DC中
 	m_dcCompatible.SelectObject(&m_mapCompatible);
 	// 将原始设备颜色表及像素数据块复制到兼容DC中
-	m_dcCompatible.BitBlt(0, 0, m_Data.m_rc.right - m_Data.m_rc.left - 4, m_Data.m_rc.bottom - m_Data.m_rc.top - 4, &m_srcDc, m_Data.m_rc.left + 2, m_Data.m_rc.top + 2, SRCCOPY);
+	m_dcCompatible.BitBlt(0, 0, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, &m_srcDc, m_rc.left + 2, m_rc.top + 2, SRCCOPY);
 	CClientDC dc(this);
 	//RECT displayRect;
 	// 将位图保存在剪切板中
@@ -625,11 +579,7 @@ bool CScreenGifDlg::GetPic()
 	return true;
 	
 }
-DWORD WINAPI CScreenGifDlg::ThreadMakeGif(LPVOID lpParam)
-{
-	((CScreenGifDlg*)lpParam)->MakeGif();
-	return 0;
-}
+
 void CScreenGifDlg::MakeGif()
 {
 	int n = m_index;
@@ -682,7 +632,7 @@ void CScreenGifDlg::MakeGif()
 		}
 		else   //非第一个gif文件
 		{
-			CombineGif(m_pGifFile, strgifName, m_wGifbeginSize);	//多幅gif图片拼接成一个
+			CGif::CombineGif(m_pGifFile, strgifName, m_wGifbeginSize);	//多幅gif图片拼接成一个
 			::DeleteFile(strgifName);
 
 		}
@@ -692,34 +642,7 @@ void CScreenGifDlg::MakeGif()
 	m_Progress.ShowWindow(SW_HIDE);
 }
 
-LRESULT CScreenGifDlg::OnThreadEnd(WPARAM wParam, LPARAM lParam)
-{
-	//保存文件
-	ShowWindow(SW_HIDE);
-	m_pGifFile->Close();
-	if (IDYES == ::MessageBox(NULL, _T("Gif图片完成！\n是否另存为"), _T("ScreenGif"), MB_ICONQUESTION | MB_YESNO))
-	{
-		//保存功能
-		CString filter;
-		filter = _T("*.gif||");
-		CString strTime; //获取系统时间 　　
-		CTime tm;
-		tm = CTime::GetCurrentTime();
-		strTime = tm.Format("%Y%m%d%H%M%S");
-		CString strDefName = _T("SGif") + strTime + _T(".gif");
-		CFileDialog dlg(FALSE, NULL, LPCTSTR(strDefName), OFN_HIDEREADONLY, filter);
-		if (dlg.DoModal() == IDOK)
-		{
-			CString str;
-			str = dlg.GetPathName();
-			if (!str.IsEmpty() && !m_strCurentGif.IsEmpty())
-			{
-				MoveFile(m_strCurentGif, str);
-			}
-		}
-	}
-	return 0;
-}
+
 
 //保存bitmap图
 void CScreenGifDlg::SaveBitmapToFile(CBitmap* pBitmap, CString fileName)
@@ -816,7 +739,7 @@ void CScreenGifDlg::SaveBitmapToFile(CBitmap* pBitmap, CString fileName)
 
 }
 
-// 每隔两秒截取一张图
+// 每隔50ms截取一张图
 void CScreenGifDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
@@ -841,7 +764,7 @@ void CScreenGifDlg::OnTimer(UINT_PTR nIDEvent)
 			m_mapCompatible.DeleteObject();
 		}
 		//将bmp图片转换成gif图片
-		CGlobalData::GetGifPic(strbmpName, strgifName);
+		CGif::GetGifPic(strbmpName, strgifName);
 		::DeleteFile(strbmpName);
 	}
 	if (nIDEvent == 3)
@@ -866,53 +789,38 @@ HBRUSH CScreenGifDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 
 
-
-BOOL CScreenGifDlg::PreTranslateMessage(MSG* pMsg)
-{
-	// TODO:  在此添加专用代码和/或调用基类
-	return CDialogEx::PreTranslateMessage(pMsg);
-}
-
-
-
 LRESULT  CScreenGifDlg::OnNotifyMsg(WPARAM wparam, LPARAM lparam)
 {
 	if (wparam != IDR_MAINFRAME)
 		return    1;
 	switch (lparam)
 	{
-	case  WM_RBUTTONUP://右键起来时弹出快捷菜单，这里只有一个“关闭”     
-	{
-		LPPOINT lpoint = new tagPOINT;
-		::GetCursorPos(lpoint);//得到鼠标位置     
-		CMenu menu;
+		case  WM_RBUTTONUP://右键起来时弹出快捷菜单，这里只有一个“关闭”     
+		{
+			LPPOINT lpoint = new tagPOINT;
+			::GetCursorPos(lpoint);//得到鼠标位置     
+			CMenu menu;
 		
-		menu.CreatePopupMenu();//声明一个弹出式菜单     
-		//增加菜单项“关闭”，点击则发送消息WM_DESTROY给主窗口（已        //隐藏），将程序结束。  
-		menu.AppendMenu(MF_STRING, WM_DESTROY, _T("关闭"));
-		menu.AppendMenu(MF_STRING, WM_USEHELP, _T("帮助"));
-		//确定弹出式菜单的位置
-		SetForegroundWindow();
-		menu.TrackPopupMenu(TPM_LEFTALIGN, lpoint->x, lpoint->y, this);
-		//资源回收     
-		HMENU hmenu = menu.Detach();
-		menu.DestroyMenu();
-		delete lpoint;
-	}
+			menu.CreatePopupMenu();//声明一个弹出式菜单     
+			menu.AppendMenu(MF_STRING, WM_USEHELP, _T("帮助"));
+			menu.AppendMenu(MF_STRING, WM_ABOUT, _T("关于"));
+			menu.AppendMenu(MF_STRING, WM_DESTROY, _T("关闭"));
+			//确定弹出式菜单的位置
+			SetForegroundWindow();
+			menu.TrackPopupMenu(TPM_LEFTALIGN, lpoint->x, lpoint->y, this);
+			//资源回收     
+			HMENU hmenu = menu.Detach();
+			menu.DestroyMenu();
+			delete lpoint;
+		}
 		break;
-	case    WM_LBUTTONDBLCLK://双击左键的处理     
-	{
-		 //this->ShowWindow(SW_SHOW);//简单的显示主窗口完事儿     
-	}
+		case    WM_LBUTTONDBLCLK://双击左键的处理     
+		{
+			 NULL;//简单的显示主窗口完事儿     
+		}
 		break;
 	}
 	return 0;
-}
-
-void CScreenGifDlg::OnCancel()
-{
-
-	CDialogEx::OnCancel();
 }
 
 
@@ -928,6 +836,16 @@ void CScreenGifDlg::OnBnClickedCancel()
 
 void CScreenGifDlg::OnHelp()
 {
-	::MessageBox(NULL, _T("该软件可以实现截图和gif图片制作的功能，具体的使用方式为：启动软件后，软件停靠在任务栏中。当需要截图或要录制一段gif图的时候使用快捷键 CTRL + WIN + ALT ，即可选取屏幕区域截图，√按钮用来完成截图，保存按钮可以保存图片，×取消截图，△开始录制gif，再次按下结束gif录制。"), _T("帮助"), MB_YESNO | MB_ICONINFORMATION);
+	CString strHelp = _T("该软件可以实现截图和gif图片制作的功能，具体的使用方式为：启动软件后，软件停靠在任务栏中。");
+	strHelp += _T("当需要截图或要录制一段gif图的时候使用快捷键 CTRL + WIN + ALT ，即可选取屏幕区域截图，");
+	strHelp += _T("√按钮用来完成截图，保存按钮可以保存图片，×取消截图，△开始录制gif，再次按下结束gif录制。");
 
+	::MessageBox(NULL, strHelp, _T("帮助"), MB_YESNO | MB_ICONINFORMATION);
+
+}
+
+void CScreenGifDlg::OnAbout()
+{
+	CSgifAbout aboutdlg;
+	aboutdlg.DoModal();
 }

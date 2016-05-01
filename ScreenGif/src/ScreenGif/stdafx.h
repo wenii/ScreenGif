@@ -37,6 +37,7 @@
 
 #define HOTKEYID 999
 #define WM_USEHELP 888
+#define WM_ABOUT 889
 #define UM_BEGINPOINT	WM_USER + 1
 #define UM_ENDPOINT		WM_USER + 2
 #define UM_MOUSEMOVE	WM_USER + 3

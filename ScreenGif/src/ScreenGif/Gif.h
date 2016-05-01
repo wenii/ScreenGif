@@ -66,13 +66,17 @@ typedef struct gifcontrol
 
 
 
-void CombineGif(CFile* pFile, CString& strgifName, WORD beginSize);
 class CGif
 {
 public:
 	CGif();
 	~CGif();
 public:
-	//void MakeGif(CFile* pFile, CString& strgifName);
+	// 得到gif编码
+	static int GetEncoderClsid(const WCHAR* format, CLSID* pClsid);
+	// bmp图片转成Gif图片
+	static bool GetGifPic(CString strBmpPathName, CString strGifPathName);
+	// 合并多张gif生成动态图
+	static void CombineGif(CFile* pFile, CString& strgifName, WORD beginSize);
 };
 

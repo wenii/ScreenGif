@@ -7,7 +7,7 @@
     </LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommand>../../../Release/ScreenGi.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>../../../Release/ScreenGif.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

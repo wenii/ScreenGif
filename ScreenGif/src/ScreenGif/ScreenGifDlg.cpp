@@ -494,10 +494,11 @@ void CScreenGifDlg::OnBnClickedShare()
 {
 	// TODO:  分享功能
 	CString strPath = _T("http://service.weibo.com/share/share.php?appkey=583395093&title=");
-	CString strWords = _T("微博分享测试！");
+	CString strWords = _T("微博分享");
 	CString strContext = strPath + strWords;
-
+	OnBnClickedCancel();
 	ShellExecute(NULL, _T("open"), (LPCTSTR)strContext, _T(""), _T(""), SW_SHOW);
+
 }
 
 // TODO:  截图
@@ -507,7 +508,6 @@ void CScreenGifDlg::OnBnClickedGetPic()
 	// 截图功能
 
 	GetPic();
-	//m_bIsPicexistInDc = true;
 	m_mapCompatible.DeleteObject();
 	m_pRegionDlg->DestroyWindow();
 	m_pRegionDlg = NULL;
@@ -804,7 +804,7 @@ LRESULT  CScreenGifDlg::OnNotifyMsg(WPARAM wparam, LPARAM lparam)
 			menu.CreatePopupMenu();//声明一个弹出式菜单     
 			menu.AppendMenu(MF_STRING, WM_USEHELP, _T("帮助"));
 			menu.AppendMenu(MF_STRING, WM_ABOUT, _T("关于"));
-			menu.AppendMenu(MF_STRING, WM_DESTROY, _T("关闭"));
+			menu.AppendMenu(MF_STRING, WM_DESTROY, _T("退出"));
 			//确定弹出式菜单的位置
 			SetForegroundWindow();
 			menu.TrackPopupMenu(TPM_LEFTALIGN, lpoint->x, lpoint->y, this);

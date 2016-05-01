@@ -1,0 +1,28 @@
+﻿生成启动时间为 2016/4/5 21:48:01。
+     1>项目“E:\ScreenGif\ScreenGif\ScreenGif\MouseMessage\MouseMessage.vcxproj”在节点 2 上(Rebuild 个目标)。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(356,5): warning MSB8004: Intermediate Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Intermediate Directory.
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(357,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(381,5): warning MSB8028: The intermediate directory (../../../Obj\) contains files shared from another project (ScreenGif.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         D:\Program Files (x86)\Visual Studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _USRDLL /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"../../../Obj\MouseHook.pch" /Fo"../../../Obj\\" /Fd"../../../Obj\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         D:\Program Files (x86)\Visual Studio\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _USRDLL /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"../../../Obj\MouseHook.pch" /Fo"../../../Obj\\" /Fd"../../../Obj\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Mouse.cpp MouseMessage.cpp
+         Mouse.cpp
+     1>E:\ScreenGif\ScreenGif\include\Mouse.h(1): warning C4068: 未知的杂注
+         MouseMessage.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /D NDEBUG /D _UNICODE /D UNICODE /l"0x0804" /I../../../Obj\ /nologo /fo"../../../Obj\MouseMessage.res" MouseMessage.rc 
+       Link:
+         D:\Program Files (x86)\Visual Studio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../bin/MouseHook.dll" /INCREMENTAL:NO /NOLOGO /DEF:".\MouseMessage.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"D:\Program Files (x86)\Visual Studio\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"../../../Obj/MouseHook.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../lib/MouseHook.lib" /MACHINE:X86 /SAFESEH /DLL ../../../Obj\MouseMessage.res
+         ../../../Obj\Mouse.obj
+         ../../../Obj\MouseMessage.obj
+         ../../../Obj\stdafx.obj
+            正在创建库 ../../lib/MouseHook.lib 和对象 ../../lib/MouseHook.exp
+         正在生成代码
+         已完成代码的生成
+         MouseMessage.vcxproj -> E:\ScreenGif\ScreenGif\ScreenGif\MouseMessage\../../bin\MouseHook.dll
+     1>已完成生成项目“E:\ScreenGif\ScreenGif\ScreenGif\MouseMessage\MouseMessage.vcxproj”(Rebuild 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:07.66

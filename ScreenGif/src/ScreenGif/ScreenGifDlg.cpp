@@ -443,6 +443,10 @@ void CScreenGifDlg::OnBnClickedStart()
 			{
 				CString str;
 				str = dlg.GetPathName();
+				if (str.Find(_T(".gif")) == -1) // 确保用户输入正确
+				{
+					str += _T(".gif");
+				}
 				if (!str.IsEmpty() && !m_strCurentGif.IsEmpty())
 				{
 					MoveFile(m_strCurentGif, str);
@@ -538,6 +542,10 @@ void CScreenGifDlg::OnBnClickedSave()
 	{
 		CString str;
 		str = dlg.GetPathName();
+		if (str.Find(_T(".bmp")) == -1 || str.Find(_T(".BMP")) == -1) // 确保用户输入正确
+		{
+			str += _T(".bmp");
+		}
 		CBitmap* pbmp = m_dcCompatible.GetCurrentBitmap();
 		if (pbmp != NULL)
 		{

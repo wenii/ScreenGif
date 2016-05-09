@@ -7,7 +7,10 @@
 #include "RegionDlg.h"
 #include "AllScreenDlg.h"
 #include "afxcmn.h"
+#include "Gif.h"
 class CWellcomPage;
+class CPicProcess;
+class CPicMap;
 class CScreenGifDlg : public CDialogEx
 {
 // 构造
@@ -30,8 +33,8 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	// 得到选取区域
-	afx_msg void OnBnClickedGetarea();
+	// 矩形工具
+	afx_msg void OnBnRectangle();
 	// 录制Gif图片按钮
 	afx_msg void OnBnClickedStart();
 	// 分享按钮
@@ -75,6 +78,8 @@ public:
 	void MakeGif();
 	// 添加工具栏
 	void AddToolbar();
+	// 指定区域
+	void GetRect();
 
 
 
@@ -100,5 +105,9 @@ public:
 	NOTIFYICONDATA m_notify;		//托盘数据结构体
 	CWellcomPage* m_wellcom;		//启动界面
 	CToolTipCtrl m_tooltip;			//工具栏tooltip
-	CProgressCtrl m_Progress;		// 进度条
+	CProgressCtrl m_Progress;		//进度条
+	CPicProcess* m_process;			//画图区窗口
+	CPicMap* m_map;					//画布
+	PEN m_pen;						//画笔属性
+	CBrush m_rcbrush;				//画刷（绘制矩形时用）
 };

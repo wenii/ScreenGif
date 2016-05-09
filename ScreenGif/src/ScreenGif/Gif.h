@@ -65,6 +65,13 @@ typedef struct gifcontrol
 } GIFCONTROL;
 
 
+typedef struct pen
+{
+	int m_style;		//»­±ÊÑùÊ½
+	int m_width;		//»­±Ê¿í¶È
+	COLORREF m_color;	//»­±ÊÑÕÉ«
+} PEN;
+
 
 class CGif
 {

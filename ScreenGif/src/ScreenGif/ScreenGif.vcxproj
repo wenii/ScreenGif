@@ -118,8 +118,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllScreenDlg.h" />
+    <ClInclude Include="CustomEdit.h" />
     <ClInclude Include="Gif.h" />
     <ClInclude Include="GlobalData.h" />
+    <ClInclude Include="PicMap.h" />
+    <ClInclude Include="PicProcess.h" />
     <ClInclude Include="RegionDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ScreenGif.h" />
@@ -131,8 +134,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AllScreenDlg.cpp" />
+    <ClCompile Include="CustomEdit.cpp" />
     <ClCompile Include="Gif.cpp" />
     <ClCompile Include="GlobalData.cpp" />
+    <ClCompile Include="PicMap.cpp" />
+    <ClCompile Include="PicProcess.cpp" />
     <ClCompile Include="RegionDlg.cpp" />
     <ClCompile Include="ScreenGif.cpp" />
     <ClCompile Include="ScreenGifDlg.cpp" />

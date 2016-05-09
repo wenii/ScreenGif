@@ -8,7 +8,6 @@
 
 
 
-
 // CAllScreenDlg 对话框
 
 IMPLEMENT_DYNAMIC(CAllScreenDlg, CDialogEx)
@@ -34,7 +33,6 @@ void CAllScreenDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CAllScreenDlg, CDialogEx)
-	//ON_MESSAGE(UM_MOUSEMOVE, OmMouseMove)
 	ON_WM_PAINT()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
@@ -49,8 +47,14 @@ BOOL CAllScreenDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	SetWindowLong(GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_LAYERED);
 	SetLayeredWindowAttributes(0, 100, LWA_ALPHA);
-	SetWindowPos(&wndTop, m_rc.left, m_rc.top,
-		m_rc.right, m_rc.bottom, SWP_SHOWWINDOW);
+	SetWindowPos(&wndTop, m_rc.left, m_rc.top,m_rc.right, m_rc.bottom, SWP_SHOWWINDOW);
+	//修改鼠标贯标形状
+	SetClassLong(GetSafeHwnd(), GCL_HCURSOR, (LONG)LoadCursor(NULL, IDC_CROSS));
+
+	m_cEdit = new CCustomEdit;
+	m_cEdit->Create(WS_CHILD | WS_VISIBLE|WS_BORDER, CRect(200, 200, 600, 400), this, 18);
+	m_cEdit->ShowWindow(SW_SHOW);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常:  OCX 属性页应返回 FALSE
 }
@@ -89,6 +93,8 @@ void CAllScreenDlg::OnPaint()
 
 void CAllScreenDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
+
+	//SetClassLong(m_hWnd, GCLP_HCURSOR, (LONG)LoadCursor(NULL, IDC_CROSS));
 	m_bstart = true;
 	m_rcSelect.left = 0;
 	m_rcSelect.top = 0;

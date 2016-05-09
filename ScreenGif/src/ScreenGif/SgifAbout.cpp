@@ -57,3 +57,4 @@ void CSgifAbout::OnNmClickoschina(NMHDR* pNMHDR, LRESULT* pResult)
 	ShellExecute(NULL, _T("open"), pNMLink->item.szUrl, NULL, NULL, SW_SHOWNORMAL);
 }
 
+

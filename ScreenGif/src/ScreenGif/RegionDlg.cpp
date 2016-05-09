@@ -47,6 +47,8 @@ BOOL CRegionDlg::OnInitDialog()
 	rgn.CombineRgn(&rgn, &tmprgn, RGN_XOR);
 	SetWindowRgn(rgn, TRUE);
 	SetWindowPos(&wndTopMost, m_rect.left, m_rect.top,m_rect.right - m_rect.left, m_rect.bottom - m_rect.top, SWP_SHOWWINDOW);
+
+
 	
 
 	return TRUE;  // return TRUE unless you set the focus to a control

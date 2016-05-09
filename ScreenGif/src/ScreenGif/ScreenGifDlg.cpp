@@ -6,9 +6,10 @@
 #include "ScreenGif.h"
 #include "ScreenGifDlg.h"
 #include "afxdialogex.h"
-#include "Gif.h"
 #include "WellcomPage.h"
 #include "SgifAbout.h"
+#include "PicProcess.h"
+#include "PicMap.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -47,7 +48,11 @@ CScreenGifDlg::CScreenGifDlg(CWnd* pParent /*=NULL*/)
 	{
 		CreateDirectory(m_strPath, NULL);
 	}
-	
+	//初始化画笔
+	m_pen.m_style = PS_SOLID;
+	m_pen.m_width = 2;
+	m_pen.m_color = RGB(255, 0, 0);
+	m_rcbrush.CreateSolidBrush(NULL_BRUSH);
 }
 
 
@@ -64,6 +69,10 @@ CScreenGifDlg::~CScreenGifDlg()
 		delete m_wellcom;
 		m_wellcom = NULL;
 	}
+	if (m_process != NULL)
+	{
+		delete m_process;
+	}
 }
 void CScreenGifDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -74,7 +83,7 @@ void CScreenGifDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CScreenGifDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(ID_GETAREA, &CScreenGifDlg::OnBnClickedGetarea)
+	ON_BN_CLICKED(ID_GETAREA, &CScreenGifDlg::OnBnRectangle)
 	ON_BN_CLICKED(ID_START, &CScreenGifDlg::OnBnClickedStart)
 	ON_BN_CLICKED(ID_SHARE, &CScreenGifDlg::OnBnClickedShare)
 	ON_BN_CLICKED(ID_GETPIC, &CScreenGifDlg::OnBnClickedGetPic)
@@ -99,7 +108,7 @@ HRESULT CScreenGifDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam == HOTKEYID)
 	{
-		OnBnClickedGetarea();
+		GetRect();
 	}
 	return TRUE;
 }
@@ -167,7 +176,7 @@ LRESULT CScreenGifDlg::OnBeginPoint(WPARAM wParam, LPARAM lParam)
 LRESULT CScreenGifDlg::OnScreenPic(WPARAM wParam, LPARAM lParam)
 {
 	//指定区域
-	OnBnClickedGetarea();
+	GetRect();
 	return TRUE;
 }
 // 添加工具栏
@@ -337,6 +346,19 @@ BOOL CScreenGifDlg::OnInitDialog()
 	m_notify.uCallbackMessage = WM_USER_NOTIFYICON;
 	m_notify.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;    
 	Shell_NotifyIcon(NIM_ADD, &m_notify);	//将程序图标放在任务栏
+	//画布
+	m_map = new CPicMap;
+	m_map->Create(CPicMap::IDD, NULL);
+	m_map->ShowWindow(SW_HIDE);
+	//画图背景
+	m_process = new CPicProcess;
+	m_process->m_rc = m_rc;
+	m_map->m_pProcess = m_process; //画布保存前图层地址
+	m_process->m_map = m_map; //保存画布地址
+	m_process->Create(CPicProcess::IDD, NULL);	
+	m_process->ShowWindow(SW_HIDE);
+	
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -378,8 +400,28 @@ HCURSOR CScreenGifDlg::OnQueryDragIcon()
 }
 
 
-//指定区域
-void CScreenGifDlg::OnBnClickedGetarea()
+//矩形工具
+void CScreenGifDlg::OnBnRectangle()
+{
+	//当选择矩形工具的时候，先给截图区域覆盖窗口，后面要在该窗口上面绘图
+	if (m_process != NULL && m_map != NULL)
+	{
+		GetPic();	//先截图
+		m_process->m_bRect = true;
+		m_process->m_rc = m_rc;
+		m_map->m_curRect = m_rc;
+		m_process->m_rect.SetRectEmpty();
+		m_process->m_vecRect.clear();
+		m_map->SetWindowPos(&wndTop, m_rc.left + 2, m_rc.top + 2,
+			m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, SWP_SHOWWINDOW);
+		m_process->SetWindowPos(&wndTopMost, m_rc.left + 2, m_rc.top + 2, 
+			m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, SWP_SHOWWINDOW);
+
+	}	
+}
+
+// 指定区域
+void CScreenGifDlg::GetRect()
 {
 	ShowWindow(SW_HIDE);
 	if (m_pRegionDlg != NULL)
@@ -392,18 +434,23 @@ void CScreenGifDlg::OnBnClickedGetarea()
 		m_pAllScreenDlg->DestroyWindow();
 		m_pAllScreenDlg = NULL;
 	}
-
-		m_pAllScreenDlg = new CAllScreenDlg;		//创建新的全屏幕背景对话框
-		m_pAllScreenDlg->m_rc = m_AllScreen;
-		m_pAllScreenDlg->Create(IDD_DIALOG_ALLSCREEN, NULL);
-		m_pAllScreenDlg->ShowWindow(SW_SHOW);
-	
+	m_pAllScreenDlg = new CAllScreenDlg;		//创建新的全屏幕背景对话框
+	m_pAllScreenDlg->m_rc = m_AllScreen;
+	m_pAllScreenDlg->Create(IDD_DIALOG_ALLSCREEN, NULL);
+	m_pAllScreenDlg->ShowWindow(SW_SHOW);
 }
 
 // TODO:  制作Gif图
 void CScreenGifDlg::OnBnClickedStart()
 {
-	
+	if (m_process->IsWindowVisible())
+	{
+		m_process->ShowWindow(SW_HIDE);
+	}
+	if (m_map->IsWindowVisible())
+	{
+		m_map->ShowWindow(SW_HIDE);
+	}
 	if (m_bIsReadyGif)
 	{
 		//Gif录制结束
@@ -497,6 +544,14 @@ void CScreenGifDlg::OnBnClickedStart()
 void CScreenGifDlg::OnBnClickedShare()
 {
 	// TODO:  分享功能
+	if (m_process->IsWindowVisible())
+	{
+		m_process->ShowWindow(SW_HIDE);
+	}
+	if (m_map->IsWindowVisible())
+	{
+		m_map->ShowWindow(SW_HIDE);
+	}
 	CString strPath = _T("http://service.weibo.com/share/share.php?appkey=583395093&title=");
 	CString strWords = _T("微博分享");
 	CString strContext = strPath + strWords;
@@ -512,6 +567,14 @@ void CScreenGifDlg::OnBnClickedGetPic()
 	// 截图功能
 
 	GetPic();
+	if (m_process->IsWindowVisible())
+	{
+		m_process->ShowWindow(SW_HIDE);
+	}
+	if (m_map->IsWindowVisible())
+	{
+		m_map->ShowWindow(SW_HIDE);
+	}
 	m_mapCompatible.DeleteObject();
 	m_pRegionDlg->DestroyWindow();
 	m_pRegionDlg = NULL;
@@ -522,8 +585,16 @@ void CScreenGifDlg::OnBnClickedGetPic()
 // TODO:  另存为
 void CScreenGifDlg::OnBnClickedSave()
 {
-	ShowWindow(SW_HIDE);
 	GetPic();
+	if (m_process->IsWindowVisible())
+	{
+		m_process->ShowWindow(SW_HIDE);
+	}
+	if (m_map->IsWindowVisible())
+	{
+		m_map->ShowWindow(SW_HIDE);
+	}
+	ShowWindow(SW_HIDE);
 	//m_bIsPicexistInDc = false;
 	if (m_pRegionDlg != NULL)
 	{
@@ -563,16 +634,37 @@ bool CScreenGifDlg::GetPic()
 	{
 		m_dcCompatible.CreateCompatibleDC(&m_srcDc);
 	}
+
+	if (m_process->m_SrcMemDC.m_hDC == NULL)
+	{
+		m_process->m_SrcMemDC.CreateCompatibleDC(&m_srcDc);
+	}
+	
+	if (m_map->m_SrcMemDC.m_hDC == NULL)
+	{
+		m_map->m_SrcMemDC.CreateCompatibleDC(&m_srcDc);
+	}
+
+
 	// 创建位图兼容DC
 	if (m_mapCompatible.m_hObject == NULL)
 	{
 		m_mapCompatible.CreateCompatibleBitmap(&m_srcDc, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4);
 
 	}
+	CBitmap bmp1, bmp2;
+	bmp1.CreateCompatibleBitmap(&m_srcDc, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4);
+	bmp2.CreateCompatibleBitmap(&m_srcDc, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4);
+
+
 	// 将兼容位图选入兼容DC中
 	m_dcCompatible.SelectObject(&m_mapCompatible);
+	m_process->m_SrcMemDC.SelectObject(&bmp1);
+	m_map->m_SrcMemDC.SelectObject(&bmp2);
 	// 将原始设备颜色表及像素数据块复制到兼容DC中
 	m_dcCompatible.BitBlt(0, 0, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, &m_srcDc, m_rc.left + 2, m_rc.top + 2, SRCCOPY);
+	m_process->m_SrcMemDC.BitBlt(0, 0, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, &m_srcDc, m_rc.left + 2, m_rc.top + 2, SRCCOPY);
+	m_map->m_SrcMemDC.BitBlt(0, 0, m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, &m_srcDc, m_rc.left + 2, m_rc.top + 2, SRCCOPY);
 	CClientDC dc(this);
 	//RECT displayRect;
 	// 将位图保存在剪切板中
@@ -831,9 +923,17 @@ LRESULT  CScreenGifDlg::OnNotifyMsg(WPARAM wparam, LPARAM lparam)
 	return 0;
 }
 
-
+//取消
 void CScreenGifDlg::OnBnClickedCancel()
 {
+	if (m_process->IsWindowVisible())
+	{
+		m_process->ShowWindow(SW_HIDE);
+	}
+	if (m_map->IsWindowVisible())
+	{
+		m_map->ShowWindow(SW_HIDE);
+	}
 	if (m_pRegionDlg != NULL)
 	{
 		m_pRegionDlg->ShowWindow(SW_HIDE);

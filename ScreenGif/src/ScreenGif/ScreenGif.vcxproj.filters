@@ -51,6 +51,15 @@
     <ClInclude Include="SgifAbout.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CustomEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PicProcess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PicMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ScreenGif.cpp">
@@ -78,6 +87,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SgifAbout.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PicProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PicMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

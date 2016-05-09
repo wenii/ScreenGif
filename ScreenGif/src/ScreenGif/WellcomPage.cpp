@@ -64,9 +64,10 @@ BOOL CWellcomPage::OnInitDialog()
 	SetWindowPos(&wndTopMost, 0, 0, 600, 200, SWP_SHOWWINDOW);
 	// TODO:  在此添加额外的初始化
 	SetTimer(2, 5000, NULL);
-	int x = GetSystemMetrics(SM_CXSCREEN);
-	int y = GetSystemMetrics(SM_CYSCREEN);
+	LONG x = GetSystemMetrics(SM_CXSCREEN);
+	LONG y = GetSystemMetrics(SM_CYSCREEN);
 	MoveWindow(CRect(x / 2 - 300, y / 2 - 100, x / 2 + 300, y / 2 + 100));
+
 
 
 	return TRUE;  

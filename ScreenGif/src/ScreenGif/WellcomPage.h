@@ -3,7 +3,6 @@
 
 
 // CWellcomPage ¶Ô»°¿ò
-
 class CWellcomPage : public CDialog
 {
 	DECLARE_DYNAMIC(CWellcomPage)
@@ -23,4 +22,5 @@ public:
 	afx_msg void OnPaint();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
 };

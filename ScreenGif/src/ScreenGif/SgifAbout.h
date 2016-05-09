@@ -1,6 +1,5 @@
 #pragma once
 
-
 // CSgifAbout ¶Ô»°¿ò
 
 class CSgifAbout : public CDialogEx
@@ -22,4 +21,5 @@ public:
 	void OnNmClickgithub(NMHDR* pNMHDR, LRESULT* pResult);
 	void OnNmClickoschina(NMHDR* pNMHDR, LRESULT* pResult);
 	virtual BOOL OnInitDialog();
+
 };

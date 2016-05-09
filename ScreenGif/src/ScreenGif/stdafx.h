@@ -34,6 +34,10 @@
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
 #include "Resource.h"
+#include "list"
+#include "vector"
+using namespace std;
+
 
 #define HOTKEYID 999
 #define WM_USEHELP 888

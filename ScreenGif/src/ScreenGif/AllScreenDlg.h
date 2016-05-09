@@ -1,5 +1,5 @@
 #pragma once
-
+#include "CustomEdit.h"
 
 // CAllScreenDlg 对话框
 
@@ -38,4 +38,6 @@ public:
 	POINT m_beginpoint;	//开始点
 	POINT m_endpoint;	//结束点
 	bool m_bstart;		//正在画区域	
+	CCustomEdit* m_cEdit;
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 };

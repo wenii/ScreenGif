@@ -2,7 +2,6 @@
 
 
 // CRegionDlg ¶Ô»°¿ò
-
 class CRegionDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CRegionDlg)
@@ -26,4 +25,6 @@ public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 private:
 	CBrush m_brush;
+
+
 };

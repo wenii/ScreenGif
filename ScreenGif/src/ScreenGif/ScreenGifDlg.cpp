@@ -100,6 +100,10 @@ BEGIN_MESSAGE_MAP(CScreenGifDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_WM_MOUSEMOVE()
 	ON_BN_CLICKED(IDC_CANCEL, &CScreenGifDlg::OnBnClickedCancel)
+	ON_BN_CLICKED(IDC_BUTTON_CIRCLE, &CScreenGifDlg::OnBnClickedButtonCircle)
+	ON_BN_CLICKED(IDC_BUTTON_ARROW, &CScreenGifDlg::OnBnClickedButtonArrow)
+	ON_BN_CLICKED(IDC_BUTTON_A, &CScreenGifDlg::OnBnClickedButtonA)
+	ON_BN_CLICKED(IDC_BUTTON_BACK, &CScreenGifDlg::OnBnClickedButtonBack)
 END_MESSAGE_MAP()
 
 
@@ -189,11 +193,15 @@ void CScreenGifDlg::AddToolbar()
 	GetDlgItem(ID_SHARE)->ShowWindow(SW_HIDE);
 	GetDlgItem(ID_FULLSCREEN)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_CANCEL)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_CIRCLE)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_ARROW)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_A)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BUTTON_BACK)->ShowWindow(SW_HIDE);
 
 	if (m_toolbar.CreateEx(this, CBRS_FLYBY | TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | WS_CHILD | WS_VISIBLE | CBRS_SIZE_FIXED | CBRS_TOP | CBRS_TOOLTIPS))
 	{
 		
-		static UINT BASED_CODE DockTool[] = { ID_GETAREA, ID_SAVE, ID_START, IDC_CANCEL, ID_GETPIC  , ID_SHARE};
+		static UINT BASED_CODE DockTool[] = { ID_GETAREA, IDC_BUTTON_CIRCLE, IDC_BUTTON_ARROW, IDC_BUTTON_A, IDC_BUTTON_BACK, ID_START, ID_SAVE, ID_SHARE, IDC_CANCEL, ID_GETPIC };
 		CBitmap bitmap;
 		bitmap.LoadBitmapW(IDB_BITMAP1);
 		m_toolbarlist.Create(16, 16, ILC_COLOR24, 0, 0);
@@ -208,7 +216,7 @@ void CScreenGifDlg::AddToolbar()
 		sImage.cx = 16;
 		sImage.cy = 16;
 		m_toolbar.SetSizes(sbutton, sImage);
-		m_toolbar.SetButtons(DockTool, (UINT)6);
+		m_toolbar.SetButtons(DockTool, (UINT)10);
 		RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
 
 	}
@@ -956,4 +964,29 @@ void CScreenGifDlg::OnAbout()
 {
 	CSgifAbout aboutdlg;
 	aboutdlg.DoModal();
+}
+
+//画圆圈
+void CScreenGifDlg::OnBnClickedButtonCircle()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+//箭头
+void CScreenGifDlg::OnBnClickedButtonArrow()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+//文字
+void CScreenGifDlg::OnBnClickedButtonA()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+//撤销
+void CScreenGifDlg::OnBnClickedButtonBack()
+{
+	// TODO:  在此添加控件通知处理程序代码
 }

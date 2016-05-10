@@ -67,6 +67,14 @@ public:
 	afx_msg LRESULT OnNotifyMsg(WPARAM wparam, LPARAM lparam);
 	// 取消按钮
 	afx_msg void OnBnClickedCancel();
+	// 画圆工具
+	afx_msg void OnBnClickedButtonCircle();
+	// 箭头工具
+	afx_msg void OnBnClickedButtonArrow();
+	// 文字工具
+	afx_msg void OnBnClickedButtonA();
+	// 撤销
+	afx_msg void OnBnClickedButtonBack();
 
 
 public:
@@ -110,4 +118,5 @@ public:
 	CPicMap* m_map;					//画布
 	PEN m_pen;						//画笔属性
 	CBrush m_rcbrush;				//画刷（绘制矩形时用）
+	
 };

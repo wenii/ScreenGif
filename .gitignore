@@ -13,7 +13,12 @@
 *.ilk
 *.idb
 *.gif
-
+*.user
+*.ncb
+*.manifest
+*.html
+*.dep
+*.suo
 # Precompiled Headers
 *.gch
 *.pch

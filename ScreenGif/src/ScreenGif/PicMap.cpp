@@ -63,7 +63,14 @@ void CPicMap::OnPaint()
 	list<CRect>::iterator it;
 	for (it = (m_pProcess->m_vecRect).begin(); it != (m_pProcess->m_vecRect).end(); it++)
 	{
-		m_CurMemDC.Rectangle(&(*it));
+		if (m_pProcess->m_iTool == 1)		//矩形
+		{
+			m_CurMemDC.Rectangle(&(*it));
+		}
+		else if (m_pProcess->m_iTool == 2)	//椭圆
+		{
+			m_CurMemDC.Ellipse(&(*it));
+		}
 	}
 	//将图形画在画布上
 	dc.BitBlt(0, 0, m_curRect.Width(), m_curRect.Height(), &m_CurMemDC, 0, 0, SRCCOPY);

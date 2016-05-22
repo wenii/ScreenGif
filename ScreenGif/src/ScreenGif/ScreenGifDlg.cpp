@@ -25,6 +25,7 @@ CScreenGifDlg::CScreenGifDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CScreenGifDlg::IDD, pParent)
 {
 	m_index = 0;
+	m_pAllScreenDlg = NULL;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pRegionDlg = NULL;
 	//获得显示器屏幕尺寸
@@ -137,7 +138,6 @@ LRESULT CScreenGifDlg::OnEndPoint(WPARAM wParam, LPARAM lParam)
 		m_pRegionDlg = new CRegionDlg;
 		m_pRegionDlg->m_rect = m_rc;
 		m_pRegionDlg->Create(IDD_DIALOG_REGION, NULL);
-		
 		m_pRegionDlg->ShowWindow(SW_SHOW);
 		Invalidate();
 	}
@@ -206,7 +206,6 @@ void CScreenGifDlg::AddToolbar()
 		bitmap.LoadBitmapW(IDB_BITMAP1);
 		m_toolbarlist.Create(16, 16, ILC_COLOR24, 0, 0);
 		m_toolbarlist.Add(&bitmap, (CBitmap*)NULL);
-	
 		//设置工具栏按钮图片
 		m_toolbar.GetToolBarCtrl().SetImageList(&m_toolbarlist);
 		//设置工具栏按钮大小， 和按钮中位图大小
@@ -218,7 +217,6 @@ void CScreenGifDlg::AddToolbar()
 		m_toolbar.SetSizes(sbutton, sImage);
 		m_toolbar.SetButtons(DockTool, (UINT)10);
 		RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
-
 	}
 	
 
@@ -239,11 +237,9 @@ BOOL CScreenGifDlg::OnToolTipText(UINT NID, NMHDR* pNMHDR, LRESULT* pResult)
 	{
 		//idFrom为工具条的HWND
 		nID = ::GetDlgCtrlID((HWND)nID);
-		//tem = m_toolbar.CommandToIndex(pNMHDR->idFrom);
-		  
+		//tem = m_toolbar.CommandToIndex(pNMHDR->idFrom);  
 		  HWND hWnd = ::GetFocus();
-		  tempid = m_toolbar.GetToolBarCtrl().GetDlgCtrlID();// ::GetDlgCtrlID(hWnd);
-		 
+		  tempid = m_toolbar.GetToolBarCtrl().GetDlgCtrlID();// ::GetDlgCtrlID(hWnd);	 
 	}
 	if (nID != 0)   //不为分隔符
 	{
@@ -275,46 +271,45 @@ BOOL CScreenGifDlg::OnToolTipText(UINT NID, NMHDR* pNMHDR, LRESULT* pResult)
 		// 使工具条提示窗口在最上面
 		CRect rcChild;
 		GetWindowRect(&rcChild);
-	
-		
 		//ScreenToClient(rcChild);
 		int x = 0, y = rcChild.top;
-		if (tempid == 0)
+		switch (tempid)
 		{
-			x = rcChild.left - 50;
-			y = rcChild.top + 40;
+			case 0:
+				x = rcChild.left - 15;
+				break;
+			case 1:
+				x = rcChild.left + 15;
+				break;
+			case 2:
+				x = rcChild.left + 50;
+				break;
+			case 3:
+				x = rcChild.left + 90;
+				break;
+			case 4:
+				x = rcChild.left + 130;
+				break;
+			case 5:
+				x = rcChild.left + 165;
+				break;
+			case 6:
+				x = rcChild.left + 200;
+				break;
+			case 7:
+				x = rcChild.left + 230;
+				break;
+			case 8:
+				x = rcChild.left + 260;
+				break;
+			case 9:
+				x = rcChild.left + 295;
+				break;
+			default:
+				x = rcChild.left + 330;
+				break;
 		}
-		else if (tempid == 1)
-		{
-			x = rcChild.left +30;
-			y = rcChild.top + 40;
-
-		}
-		else if (tempid == 2)
-		{
-			x = rcChild.left + 65;
-			y = rcChild.top + 40;
-
-		}
-		else if (tempid == 3)
-		{
-			x = rcChild.left +100;
-			y = rcChild.top + 40;
-
-		}
-		else if (tempid == 4)
-		{
-			x = rcChild.left +130;
-			y = rcChild.top + 40;
-
-		}
-		else if (tempid == 5)
-		{
-			x = rcChild.left +165;
-			y = rcChild.top + 40;
-
-		}
-		
+		y = rcChild.top + 40;
 		::MoveWindow(pNMHDR->hwndFrom, x, y, rcChild.Width(), rcChild.Height(), TRUE);
 		return TRUE;
 	}
@@ -408,25 +403,7 @@ HCURSOR CScreenGifDlg::OnQueryDragIcon()
 }
 
 
-//矩形工具
-void CScreenGifDlg::OnBnRectangle()
-{
-	//当选择矩形工具的时候，先给截图区域覆盖窗口，后面要在该窗口上面绘图
-	if (m_process != NULL && m_map != NULL)
-	{
-		GetPic();	//先截图
-		m_process->m_bRect = true;
-		m_process->m_rc = m_rc;
-		m_map->m_curRect = m_rc;
-		m_process->m_rect.SetRectEmpty();
-		m_process->m_vecRect.clear();
-		m_map->SetWindowPos(&wndTop, m_rc.left + 2, m_rc.top + 2,
-			m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, SWP_SHOWWINDOW);
-		m_process->SetWindowPos(&wndTopMost, m_rc.left + 2, m_rc.top + 2, 
-			m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, SWP_SHOWWINDOW);
 
-	}	
-}
 
 // 指定区域
 void CScreenGifDlg::GetRect()
@@ -468,8 +445,12 @@ void CScreenGifDlg::OnBnClickedStart()
 		(m_toolbar.GetToolBarCtrl()).EnableButton(ID_SAVE, true);
 		(m_toolbar.GetToolBarCtrl()).EnableButton(ID_GETPIC, true);
 		(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_CANCEL, true);
+		(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_A, true);
+		(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_BACK, true);
+		(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_ARROW, true);
+		(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_CIRCLE, true);
 
-		m_toolbar.SetButtonInfo(m_toolbar.CommandToIndex(ID_START), ID_START, TBBS_BUTTON, 6);
+		m_toolbar.SetButtonInfo(m_toolbar.CommandToIndex(ID_START), ID_START, TBBS_BUTTON, 10);
 		
 		SetDlgItemText(ID_START, _T("录制GIF"));
 		m_pRegionDlg->DestroyWindow();	//销毁选框
@@ -523,13 +504,17 @@ void CScreenGifDlg::OnBnClickedStart()
 	(m_toolbar.GetToolBarCtrl()).SetImageList(imagList);
 	imagList->Detach();
 	imagList = NULL;
-	m_toolbar.SetButtonInfo(m_toolbar.CommandToIndex(ID_START), ID_START, TBBS_BUTTON, 7);
+	m_toolbar.SetButtonInfo(m_toolbar.CommandToIndex(ID_START), ID_START, TBBS_BUTTON, 11);
 	//是按钮失去功能
-	(m_toolbar.GetToolBarCtrl()).EnableButton(ID_GETAREA, false);
-	(m_toolbar.GetToolBarCtrl()).EnableButton(ID_SHARE, false);
 	(m_toolbar.GetToolBarCtrl()).EnableButton(ID_SAVE, false);
+	(m_toolbar.GetToolBarCtrl()).EnableButton(ID_SHARE, false);
 	(m_toolbar.GetToolBarCtrl()).EnableButton(ID_GETPIC, false);
 	(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_CANCEL, false);
+	(m_toolbar.GetToolBarCtrl()).EnableButton(ID_GETAREA, false);
+	(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_A, false);
+	(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_BACK, false);
+	(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_ARROW, false);
+	(m_toolbar.GetToolBarCtrl()).EnableButton(IDC_BUTTON_CIRCLE, false);
 	SetDlgItemText(ID_START, _T("停止■"));
 	SetTimer(1, 50, NULL);	//设置定时器，每隔50ms截一幅图并保存
 	m_index = 0;
@@ -543,7 +528,6 @@ void CScreenGifDlg::OnBnClickedStart()
 	m_strCurentGif = strDefName;
 	m_pGifFile->Open(strDefName, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary);
 
-	
 }
 
 
@@ -889,8 +873,6 @@ HBRUSH CScreenGifDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  在此更改 DC 的任何特性
-	
-		return m_brush;
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
 	return hbr;
 }
@@ -965,23 +947,45 @@ void CScreenGifDlg::OnAbout()
 	CSgifAbout aboutdlg;
 	aboutdlg.DoModal();
 }
+//矩形工具
+void CScreenGifDlg::OnBnRectangle()
+{
+	//当选择矩形工具的时候，先给截图区域覆盖窗口，后面要在该窗口上面绘图
+	if (m_process != NULL && m_map != NULL)
+	{
+		GetPic();	//先截图
+		m_process->m_iTool = 1;	//矩形
+		m_process->m_rc = m_rc;
+		m_map->m_curRect = m_rc;
+		m_process->m_rect.SetRectEmpty();
+		m_process->m_vecRect.clear();
+		m_map->SetWindowPos(&wndBottom, m_rc.left + 2, m_rc.top + 2,
+			m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, SWP_SHOWWINDOW);
+		m_process->SetWindowPos(&wndTop, m_rc.left + 2, m_rc.top + 2,
+			m_rc.right - m_rc.left - 4, m_rc.bottom - m_rc.top - 4, SWP_SHOWWINDOW);
 
+	}
+}
 //画圆圈
 void CScreenGifDlg::OnBnClickedButtonCircle()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	
 }
 
 //箭头
 void CScreenGifDlg::OnBnClickedButtonArrow()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	
 }
 
 //文字
 void CScreenGifDlg::OnBnClickedButtonA()
 {
 	// TODO:  在此添加控件通知处理程序代码
+
+
 }
 
 
@@ -989,4 +993,5 @@ void CScreenGifDlg::OnBnClickedButtonA()
 void CScreenGifDlg::OnBnClickedButtonBack()
 {
 	// TODO:  在此添加控件通知处理程序代码
+	
 }

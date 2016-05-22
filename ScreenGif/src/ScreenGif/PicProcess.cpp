@@ -15,9 +15,10 @@ IMPLEMENT_DYNAMIC(CPicProcess, CDialog)
 CPicProcess::CPicProcess(CWnd* pParent /*=NULL*/)
 	: CDialog(CPicProcess::IDD, pParent)
 	, m_bDrawStart(false)
-	, m_bRect(false)
+	
 {
-
+	m_pointBegin = 0;
+	m_pointEnd = 0;
 }
 
 CPicProcess::~CPicProcess()
@@ -60,9 +61,12 @@ BOOL CPicProcess::OnInitDialog()
 void CPicProcess::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
+
 	m_rect.SetRectEmpty();
+	m_pointEnd = 0;
 	m_rect.left = point.x;
 	m_rect.top = point.y;
+	m_pointBegin = point;
 	m_bDrawStart = true;
 	CDialog::OnLButtonDown(nFlags, point);
 }
@@ -73,7 +77,9 @@ void CPicProcess::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	m_rect.right = point.x;
 	m_rect.bottom = point.y;
+	m_pointEnd = point;
 	m_bDrawStart = false;
+	m_pointEnd = point;
 	m_vecRect.push_back(m_rect);
 	m_map->OnPaint();
 	CDialog::OnLButtonUp(nFlags, point);
@@ -85,22 +91,40 @@ void CPicProcess::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	if (m_bDrawStart)
 	{
-		
 		m_rect.right = point.x;
 		m_rect.bottom = point.y;
-		InvalidateRect(m_rect);
-
+		Invalidate();
 	}
 	CDialog::OnMouseMove(nFlags, point);
 }
+void CPicProcess::DrawShape(CDC* dc, CPoint pointb, CPoint pointe)	//绘制图形
+{
+		//设置绘图模式
+	switch (m_iTool)
+	{
+	case 1:		//矩形
+		if(pointe.x != m_rc.left+2 || pointe.y != m_rc.top+2 )
+		{
+			dc->Rectangle(pointb.x, pointb.y, pointe.x, pointe.y);
+		}
+		break;
+	case 2:		//椭圆
+		if(pointe.x != m_rc.left+2 || pointe.y != m_rc.top+2 )
+		{
+			dc->Ellipse(pointb.x, pointb.y, pointe.x, pointe.y);
+		}
+		break;
 
+	}
+}
 
 void CPicProcess::OnPaint()
 {
 	//CPaintDC dc(this); // device context for painting
-	//画矩形
+	////画矩形
 	CDC dc;
-	dc.CreateDC(_T("DISPLAY"), NULL, NULL, NULL);
+	dc.CreateDC(_T("DISPLAY"), NULL, NULL, NULL );
+	//CWindowDC dc(this);
 	PEN penstruct = ((CScreenGifDlg*)GetParent())->m_pen;
 	//CBrush brush = ((CScreenGifDlg*)GetParent())->m_rcbrush;	//支持画实心矩形
 	CPen pen(penstruct.m_style, penstruct.m_width, penstruct.m_color);
@@ -111,14 +135,25 @@ void CPicProcess::OnPaint()
 	ClientToScreen(&rc);
 	if ((rc.left != rc.right) && (rc.top != rc.bottom) && (m_rect.right != 0) && (m_rect.bottom != 0))
 	{
-		dc.Rectangle(&rc);
+		if (m_iTool == 1)	//矩形
+		{
+			dc.Rectangle(&rc);
+		}
+		else if (m_iTool == 2)	//椭圆
+		{
+			dc.Ellipse(&rc);
+		}
 	}
+	dc.SelectObject(pOldPen);
+	dc.SelectObject(oldBrush);
+	dc.DeleteTempMap();
+	dc.DeleteDC();
+
 }
 
 
 BOOL CPicProcess::OnEraseBkgnd(CDC* pDC)
 {
-	
 	return CDialog::OnEraseBkgnd(pDC);
 }
 

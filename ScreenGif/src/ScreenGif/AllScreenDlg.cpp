@@ -51,10 +51,6 @@ BOOL CAllScreenDlg::OnInitDialog()
 	//修改鼠标贯标形状
 	SetClassLong(GetSafeHwnd(), GCL_HCURSOR, (LONG)LoadCursor(NULL, IDC_CROSS));
 
-	m_cEdit = new CCustomEdit;
-	m_cEdit->Create(WS_CHILD | WS_VISIBLE|WS_BORDER, CRect(200, 200, 600, 400), this, 18);
-	m_cEdit->ShowWindow(SW_SHOW);
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常:  OCX 属性页应返回 FALSE
 }
